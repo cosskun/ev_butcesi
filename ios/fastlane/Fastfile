@@ -35,10 +35,21 @@ def revoke_old_distribution_certs(key_id, issuer_id, private_key_pem)
   end
 end
 
-def ensure_bundle_id_and_app_exist(key_id, issuer_id, private_key_pem, bundle_id, app_name)
+def ensure_bundle_id_exists(key_id, issuer_id, private_key_pem, bundle_id, app_name)
   token = get_asc_token(key_id, issuer_id, private_key_pem)
 
-  # 1. Register Bundle ID if not exists
+  # List existing apps in ASC
+  apps_uri = URI("https://api.appstoreconnect.apple.com/v1/apps")
+  apps_req = Net::HTTP::Get.new(apps_uri)
+  apps_req["Authorization"] = "Bearer #{token}"
+  apps_res = Net::HTTP.start(apps_uri.hostname, apps_uri.port, use_ssl: true) { |http| http.request(apps_req) }
+  if apps_res.is_a?(Net::HTTPSuccess)
+    apps_data = JSON.parse(apps_res.body)
+    existing_apps = (apps_data["data"] || []).map { |a| "#{a['attributes']['name']} (#{a['attributes']['bundleId']})" }
+    UI.message("Existing Apps in App Store Connect: #{existing_apps.inspect}")
+  end
+
+  # Register Bundle ID if not exists
   uri = URI("https://api.appstoreconnect.apple.com/v1/bundleIds?filter[identifier]=#{bundle_id}")
   req = Net::HTTP::Get.new(uri)
   req["Authorization"] = "Bearer #{token}"
@@ -75,51 +86,6 @@ def ensure_bundle_id_and_app_exist(key_id, issuer_id, private_key_pem, bundle_id
       UI.message("Successfully registered Bundle ID: #{bundle_id} (ID: #{bundle_id_resource_id})")
     else
       UI.important("Bundle ID registration response: #{post_res.code} - #{post_res.body}")
-    end
-  end
-
-  # 2. Create App on App Store Connect if not exists
-  if bundle_id_resource_id
-    app_uri = URI("https://api.appstoreconnect.apple.com/v1/apps?filter[bundleId]=#{bundle_id_resource_id}")
-    app_req = Net::HTTP::Get.new(app_uri)
-    app_req["Authorization"] = "Bearer #{token}"
-    app_res = Net::HTTP.start(app_uri.hostname, app_uri.port, use_ssl: true) { |http| http.request(app_req) }
-    app_exists = false
-    if app_res.is_a?(Net::HTTPSuccess)
-      app_data = JSON.parse(app_res.body)
-      app_exists = (app_data["data"] && app_data["data"].length > 0)
-    end
-
-    unless app_exists
-      sku = "sku_#{bundle_id.gsub(/[^a-zA-Z0-9]/, '_')}_#{Time.now.to_i}"[0...30]
-      create_app_uri = URI("https://api.appstoreconnect.apple.com/v1/apps")
-      create_app_req = Net::HTTP::Post.new(create_app_uri)
-      create_app_req["Authorization"] = "Bearer #{token}"
-      create_app_req["Content-Type"] = "application/json"
-      create_app_req.body = JSON.dump({
-        data: {
-          type: "apps",
-          attributes: {
-            name: "#{app_name} App",
-            primaryLocale: "en-US",
-            sku: sku
-          },
-          relationships: {
-            bundleId: {
-              data: {
-                type: "bundleIds",
-                id: bundle_id_resource_id
-              }
-            }
-          }
-        }
-      })
-      create_app_res = Net::HTTP.start(create_app_uri.hostname, create_app_uri.port, use_ssl: true) { |http| http.request(create_app_req) }
-      if create_app_res.is_a?(Net::HTTPSuccess) || create_app_res.code == "201"
-        UI.message("Successfully created App on App Store Connect: #{app_name}")
-      else
-        UI.important("Create app note: #{create_app_res.code} - #{create_app_res.body}")
-      end
     end
   end
 end
@@ -169,7 +135,7 @@ platform :ios do
       )
     end
 
-    ensure_bundle_id_and_app_exist(
+    ensure_bundle_id_exists(
       ENV["APP_STORE_CONNECT_KEY_ID"],
       ENV["APP_STORE_CONNECT_ISSUER_ID"],
       ENV["APP_STORE_CONNECT_PRIVATE_KEY"],
