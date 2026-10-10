@@ -87,6 +87,26 @@ platform :ios do
       )
     end
 
+    begin
+      produce(
+        app_identifier: "com.evekonomisi.evButcesi",
+        app_name: "Ev Butcesi",
+        language: "English",
+        skip_itc: false
+      )
+    rescue => e
+      UI.important("Produce note: #{e.message}")
+      begin
+        produce(
+          app_identifier: "com.evekonomisi.evButcesi",
+          app_name: "Ev Butcesi FC",
+          skip_itc: true
+        )
+      rescue => e2
+        UI.important("Portal App ID note: #{e2.message}")
+      end
+    end
+
     get_provisioning_profile(
       app_identifier: "com.evekonomisi.evButcesi"
     )
