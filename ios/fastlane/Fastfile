@@ -1,4 +1,4 @@
-﻿default_platform(:ios)
+default_platform(:ios)
 
 platform :ios do
   desc "Push a new beta build to TestFlight"
@@ -10,31 +10,38 @@ platform :ios do
       is_key_content_base64: false
     )
 
+    keychain_name = "ci_keychain"
+    keychain_password = "ci_password"
+
     create_keychain(
-      name: "ci_keychain",
-      password: "ci_password",
+      name: keychain_name,
+      password: keychain_password,
       default_keychain: true,
       unlock: true,
       timeout: 3600,
       lock_when_sleeps: false
     )
 
+    kc_path = Actions.lane_context[SharedValues::KEYCHAIN_PATH] || File.expand_path("~/Library/Keychains/#{keychain_name}-db")
+
     get_certificates(
-      keychain_name: "ci_keychain",
-      keychain_password: "ci_password",
-      development: false
+      keychain_path: kc_path,
+      keychain_password: keychain_password
     )
 
     get_provisioning_profile(
-      app_identifier: "com.evekonomisi.evButcesi",
-      development: false
+      app_identifier: "com.evekonomisi.evButcesi"
     )
 
     build_app(
       workspace: "Runner.xcworkspace",
       scheme: "Runner",
       export_method: "app-store",
-      clean: false,
+      export_options: {
+        method: "app-store",
+        export_team_id: "BHYTLHA722"
+      },
+      xcargs: "DEVELOPMENT_TEAM=BHYTLHA722",
       output_directory: "./build_fastlane",
       output_name: "ev_butcesi.ipa"
     )
