@@ -22,7 +22,9 @@ platform :ios do
       lock_when_sleeps: false
     )
 
-    kc_path = Actions.lane_context[SharedValues::KEYCHAIN_PATH] || File.expand_path("~/Library/Keychains/#{keychain_name}-db")
+    kc_path_db = File.expand_path("~/Library/Keychains/#{keychain_name}-db")
+    kc_path_raw = File.expand_path("~/Library/Keychains/#{keychain_name}")
+    kc_path = File.exist?(kc_path_db) ? kc_path_db : kc_path_raw
 
     get_certificates(
       keychain_path: kc_path,
