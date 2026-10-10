@@ -181,15 +181,32 @@ platform :ios do
       app_identifier: "com.evekonomisi.evButcesi"
     )
 
+    profile_name = Actions.lane_context[SharedValues::SIGH_NAME]
+    profile_uuid = Actions.lane_context[SharedValues::SIGH_UUID]
+
+    update_code_signing_settings(
+      use_automatic_signing: false,
+      path: "Runner.xcodeproj",
+      team_id: "BHYTLHA722",
+      bundle_identifier: "com.evekonomisi.evButcesi",
+      profile_name: profile_name,
+      code_sign_identity: "Apple Distribution"
+    )
+
     build_app(
       workspace: "Runner.xcworkspace",
       scheme: "Runner",
+      configuration: "Release",
       export_method: "app-store",
       export_options: {
         method: "app-store",
-        export_team_id: "BHYTLHA722"
+        export_team_id: "BHYTLHA722",
+        signingStyle: "manual",
+        provisioningProfiles: {
+          "com.evekonomisi.evButcesi" => profile_name
+        }
       },
-      xcargs: "DEVELOPMENT_TEAM=BHYTLHA722",
+      xcargs: "DEVELOPMENT_TEAM=BHYTLHA722 PROVISIONING_PROFILE_SPECIFIER='#{profile_name}' CODE_SIGN_IDENTITY='Apple Distribution'",
       output_directory: "./build_fastlane",
       output_name: "ev_butcesi.ipa"
     )
