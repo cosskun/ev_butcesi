@@ -1,4 +1,46 @@
+require 'jwt'
+require 'net/http'
+require 'uri'
+require 'json'
+require 'openssl'
+
 default_platform(:ios)
+
+def revoke_old_distribution_certs(key_id, issuer_id, private_key_pem)
+  header = {
+    alg: "ES256",
+    kid: key_id,
+    typ: "JWT"
+  }
+  payload = {
+    iss: issuer_id,
+    exp: Time.now.to_i + (20 * 60),
+    aud: "appstoreconnect-v1"
+  }
+  
+  ec_key = OpenSSL::PKey::EC.new(private_key_pem)
+  token = JWT.encode(payload, ec_key, 'ES256', header)
+
+  ["DISTRIBUTION", "IOS_DISTRIBUTION"].each do |cert_type|
+    uri = URI("https://api.appstoreconnect.apple.com/v1/certificates?filter[certificateType]=#{cert_type}")
+    req = Net::HTTP::Get.new(uri)
+    req["Authorization"] = "Bearer #{token}"
+    
+    res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) { |http| http.request(req) }
+    if res.is_a?(Net::HTTPSuccess)
+      data = JSON.parse(res.body)
+      certs = data["data"] || []
+      certs.each do |c|
+        c_id = c["id"]
+        del_uri = URI("https://api.appstoreconnect.apple.com/v1/certificates/#{c_id}")
+        del_req = Net::HTTP::Delete.new(del_uri)
+        del_req["Authorization"] = "Bearer #{token}"
+        Net::HTTP.start(del_uri.hostname, del_uri.port, use_ssl: true) { |http| http.request(del_req) }
+        UI.message("Revoked old distribution cert: #{c_id}")
+      end
+    end
+  end
+end
 
 platform :ios do
   desc "Push a new beta build to TestFlight"
@@ -26,10 +68,24 @@ platform :ios do
     kc_path_raw = File.expand_path("~/Library/Keychains/#{keychain_name}")
     kc_path = File.exist?(kc_path_db) ? kc_path_db : kc_path_raw
 
-    get_certificates(
-      keychain_path: kc_path,
-      keychain_password: keychain_password
-    )
+    begin
+      get_certificates(
+        keychain_path: kc_path,
+        keychain_password: keychain_password
+      )
+    rescue => e
+      UI.important("Certificate limit reached or invalid certs. Cleaning old distribution certs and retrying...")
+      revoke_old_distribution_certs(
+        ENV["APP_STORE_CONNECT_KEY_ID"],
+        ENV["APP_STORE_CONNECT_ISSUER_ID"],
+        ENV["APP_STORE_CONNECT_PRIVATE_KEY"]
+      )
+      get_certificates(
+        keychain_path: kc_path,
+        keychain_password: keychain_password,
+        force: true
+      )
+    end
 
     get_provisioning_profile(
       app_identifier: "com.evekonomisi.evButcesi"
