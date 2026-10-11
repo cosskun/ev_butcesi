@@ -28,6 +28,12 @@
 	<true/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Fatura ve fis fotograflarini secmek icin galeri erisimi gereklidir.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Fatura ve fis cekebilmek icin kamera erisimi gereklidir.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Gerekli durumlarda ses ve video kaydi icin mikrofon erisimi gereklidir.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
