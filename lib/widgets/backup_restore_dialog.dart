@@ -55,8 +55,8 @@ class _BackupRestoreSheetState extends State<BackupRestoreSheet> {
         allowedExtensions: ['json'],
       );
 
-      if (picked.isNotEmpty) {
-        final path = picked.first.path;
+      if (picked != null && picked.files.isNotEmpty) {
+        final path = picked.files.first.path;
         if (path == null) return;
 
         setState(() {

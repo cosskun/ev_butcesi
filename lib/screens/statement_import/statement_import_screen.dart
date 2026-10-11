@@ -37,19 +37,19 @@ class _StatementImportScreenState extends State<StatementImportScreen> {
 
   Future<void> _pickStatementFile() async {
     try {
-      final files = await FilePicker.pickFiles(
+      final result = await FilePicker.pickFiles(
         type: FileType.custom,
         allowedExtensions: ['pdf', 'csv', 'txt', 'xlsx'],
       );
 
-      if (files.isNotEmpty) {
+      if (result != null && result.files.isNotEmpty) {
         setState(() {
           _isAnalyzing = true;
           _analysisProgress = 0.05;
           _analysisStatus = 'Dosya hazırlanıyor...';
         });
 
-        final pickedFile = files.first;
+        final pickedFile = result.files.first;
         final existing = context.read<FinanceProvider>().transactions;
 
         void updateProgress(double progress, String status) {
@@ -69,14 +69,16 @@ class _StatementImportScreenState extends State<StatementImportScreen> {
             existingTransactions: existing,
             onProgress: updateProgress,
           );
-        } else {
-          final bytes = await pickedFile.readAsBytes();
+        } else if (pickedFile.bytes != null) {
+          final bytes = pickedFile.bytes!;
           parseRes = await StatementParserService.parseBytes(
             bytes,
             pickedFile.name,
             existingTransactions: existing,
             onProgress: updateProgress,
           );
+        } else {
+          throw Exception('Dosya içeriği okunamadı.');
         }
 
         if (mounted) {
