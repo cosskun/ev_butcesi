@@ -69,17 +69,23 @@ class _BackupRestoreSheetState extends State<BackupRestoreSheet> {
         final res = await BackupService.restoreFromJson(content);
 
         if (mounted) {
+          final messenger = ScaffoldMessenger.of(context);
+          final navigator = Navigator.of(context);
           if (res.success) {
-            await context.read<FinanceProvider>().reloadAll();
-            await context.read<InvestmentProvider>().init();
+            final finance = context.read<FinanceProvider>();
+            final investment = context.read<InvestmentProvider>();
+            await finance.reloadAll();
+            await investment.init();
           }
+
+          if (!mounted) return;
 
           setState(() {
             _isLoading = false;
             _statusMessage = res.message;
           });
 
-          ScaffoldMessenger.of(context).showSnackBar(
+          messenger.showSnackBar(
             SnackBar(
               content: Text('${res.message} (${res.transactionCount} işlem)'),
               backgroundColor: res.success ? const Color(0xFF10B981) : Colors.red,
@@ -87,7 +93,7 @@ class _BackupRestoreSheetState extends State<BackupRestoreSheet> {
           );
 
           if (res.success) {
-            Navigator.of(context).pop();
+            navigator.pop();
           }
         }
       }
@@ -123,31 +129,39 @@ class _BackupRestoreSheetState extends State<BackupRestoreSheet> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: primaryColor.withValues(alpha: 0.15),
-                      borderRadius: BorderRadius.circular(10),
+              Expanded(
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: primaryColor.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Icon(Icons.cloud_sync_rounded, color: primaryColor, size: 22),
                     ),
-                    child: Icon(Icons.cloud_sync_rounded, color: primaryColor, size: 22),
-                  ),
-                  const SizedBox(width: 12),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Yedekleme & Geri Yükleme',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: textPrimary),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Yedekleme & Geri Yükleme',
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: textPrimary),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            'Google Drive / iCloud / Cihaz Hafızası',
+                            style: TextStyle(fontSize: 11, color: textSecondary),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
                       ),
-                      Text(
-                        'Google Drive / iCloud / Cihaz Hafızası',
-                        style: TextStyle(fontSize: 11, color: textSecondary),
-                      ),
-                    ],
-                  ),
-                ],
+                    ),
+                  ],
+                ),
               ),
               IconButton(
                 icon: Icon(Icons.close_rounded, color: textSecondary),

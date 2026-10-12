@@ -24,8 +24,8 @@ class CategoryModel {
       'id': id,
       'name': name,
       'icon_code': icon.codePoint,
-      'color_value': color.value,
-      'bg_color_value': bgColor.value,
+      'color_value': color.toARGB32(),
+      'bg_color_value': bgColor.toARGB32(),
       'type': type.name,
     };
   }

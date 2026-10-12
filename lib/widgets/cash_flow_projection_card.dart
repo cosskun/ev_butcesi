@@ -71,12 +71,16 @@ class CashFlowProjectionCard extends StatelessWidget {
                         children: [
                           Row(
                             children: [
-                              const Text(
-                                'Gelecek Ay Tahmini',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w700,
-                                  color: AppTheme.textPrimary,
+                              const Flexible(
+                                child: Text(
+                                  'Gelecek Ay Tahmini',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppTheme.textPrimary,
+                                  ),
                                 ),
                               ),
                               const SizedBox(width: 6),
@@ -127,28 +131,37 @@ class CashFlowProjectionCard extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Cepte Kalacak Net Tutar',
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w600,
-                              color: isPositive ? AppTheme.incomeColor : AppTheme.expenseColor,
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Cepte Kalacak Net Tutar',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                                color: isPositive ? AppTheme.incomeColor : AppTheme.expenseColor,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            Formatters.formatCurrency(projection.projectedFreeCash),
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w800,
-                              color: isPositive ? AppTheme.incomeColor : AppTheme.expenseColor,
+                            const SizedBox(height: 2),
+                            FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                Formatters.formatCurrency(projection.projectedFreeCash),
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w800,
+                                  color: isPositive ? AppTheme.incomeColor : AppTheme.expenseColor,
+                                ),
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
+                      const SizedBox(width: 8),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                         decoration: BoxDecoration(

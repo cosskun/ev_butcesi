@@ -382,9 +382,13 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             children: [
               Icon(Icons.compare_arrows_rounded, color: Theme.of(context).colorScheme.primary, size: 20),
               const SizedBox(width: 8),
-              const Text(
-                'Ödeme Yöntemi Dağılımı',
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppTheme.textPrimary),
+              const Expanded(
+                child: Text(
+                  'Ödeme Yöntemi Dağılımı',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppTheme.textPrimary),
+                ),
               ),
             ],
           ),

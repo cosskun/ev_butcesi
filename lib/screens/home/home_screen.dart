@@ -56,28 +56,35 @@ class HomeScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         // Left: Screen Title & Icon
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(7),
-                              decoration: BoxDecoration(
-                                color: primaryColor.withValues(alpha: 0.12),
-                                borderRadius: BorderRadius.circular(10),
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(7),
+                                decoration: BoxDecoration(
+                                  color: primaryColor.withValues(alpha: 0.12),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Icon(Icons.wallet_rounded, size: 20, color: primaryColor),
                               ),
-                              child: Icon(Icons.wallet_rounded, size: 20, color: primaryColor),
-                            ),
-                            const SizedBox(width: 10),
-                            const Text(
-                              'Ev Ekonomisi',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w800,
-                                color: AppTheme.textPrimary,
-                                letterSpacing: -0.3,
+                              const SizedBox(width: 10),
+                              const Expanded(
+                                child: Text(
+                                  'Ev Ekonomisi',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w800,
+                                    color: AppTheme.textPrimary,
+                                    letterSpacing: -0.3,
+                                  ),
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
+                        const SizedBox(width: 8),
 
                         // Right: Theme & Backup Actions
                         Row(
@@ -124,16 +131,24 @@ class HomeScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          children: [
-                            Icon(Icons.calendar_month_rounded, size: 16, color: primaryColor),
-                            const SizedBox(width: 6),
-                            const Text(
-                              'Dönem Özeti',
-                              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFF64748B)),
-                            ),
-                          ],
+                        Flexible(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.calendar_month_rounded, size: 16, color: primaryColor),
+                              const SizedBox(width: 6),
+                              const Flexible(
+                                child: Text(
+                                  'Dönem Özeti',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFF64748B)),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
+                        const SizedBox(width: 8),
                         const MonthSelector(),
                       ],
                     ),

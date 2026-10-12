@@ -42,8 +42,10 @@ class WalletScreen extends StatelessWidget {
               ),
               onPressed: () async {
                 Navigator.of(ctx).pop();
-                await context.read<FinanceProvider>().resetAllData();
-                await context.read<InvestmentProvider>().resetAllData();
+                final finance = context.read<FinanceProvider>();
+                final investment = context.read<InvestmentProvider>();
+                await finance.resetAllData();
+                await investment.resetAllData();
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
@@ -113,15 +115,21 @@ class WalletScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    Icon(Icons.account_balance_rounded, size: 18, color: primaryColor),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Banka Hesapları (${bankWallets.length})',
-                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppTheme.textPrimary),
-                    ),
-                  ],
+                Expanded(
+                  child: Row(
+                    children: [
+                      Icon(Icons.account_balance_rounded, size: 18, color: primaryColor),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'Banka Hesapları (${bankWallets.length})',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppTheme.textPrimary),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 TextButton.icon(
                   style: TextButton.styleFrom(visualDensity: VisualDensity.compact),
@@ -140,15 +148,21 @@ class WalletScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Row(
-                  children: [
-                    Icon(Icons.credit_card_rounded, size: 18, color: Color(0xFF8E24AA)),
-                    SizedBox(width: 8),
-                    Text(
-                      'Kredi Kartları',
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppTheme.textPrimary),
-                    ),
-                  ],
+                const Expanded(
+                  child: Row(
+                    children: [
+                      Icon(Icons.credit_card_rounded, size: 18, color: Color(0xFF8E24AA)),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'Kredi Kartları',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppTheme.textPrimary),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 TextButton.icon(
                   style: TextButton.styleFrom(visualDensity: VisualDensity.compact),
@@ -448,7 +462,7 @@ class WalletScreen extends StatelessWidget {
 
                   // Bank Dropdown
                   DropdownButtonFormField<String>(
-                    value: selectedBank,
+                    initialValue: selectedBank,
                     decoration: InputDecoration(
                       labelText: 'Banka / Kurum',
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),

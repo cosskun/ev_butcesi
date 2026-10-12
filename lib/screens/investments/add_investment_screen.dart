@@ -475,37 +475,46 @@ class _AddInvestmentScreenState extends State<AddInvestmentScreen> {
               style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 6),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppTheme.border),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.event_rounded, color: Theme.of(context).colorScheme.primary, size: 20),
-                  const SizedBox(width: 12),
-                  Text(
-                    Formatters.formatShortDate(_selectedDate),
-                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-                  ),
-                  const Spacer(),
-                  TextButton(
-                    onPressed: () async {
-                      final picked = await showDatePicker(
-                        context: context,
-                        initialDate: _selectedDate,
-                        firstDate: DateTime(2010),
-                        lastDate: DateTime.now(),
-                      );
-                      if (picked != null) {
-                        setState(() => _selectedDate = picked);
-                      }
-                    },
-                    child: const Text('Değiştir'),
-                  ),
-                ],
+            InkWell(
+              borderRadius: BorderRadius.circular(16),
+              onTap: () async {
+                final picked = await showDatePicker(
+                  context: context,
+                  initialDate: _selectedDate,
+                  firstDate: DateTime(2010),
+                  lastDate: DateTime.now(),
+                );
+                if (picked != null) {
+                  setState(() => _selectedDate = picked);
+                }
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: AppTheme.border),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.event_rounded, color: Theme.of(context).colorScheme.primary, size: 20),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        Formatters.formatShortDate(_selectedDate),
+                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    Text(
+                      'Değiştir',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 18),

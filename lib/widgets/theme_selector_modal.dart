@@ -91,26 +91,32 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: previewBg,
-                              borderRadius: BorderRadius.circular(12),
+                      Expanded(
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: previewBg,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Icon(Icons.palette_rounded, color: primaryCol, size: 22),
                             ),
-                            child: Icon(Icons.palette_rounded, color: primaryCol, size: 22),
-                          ),
-                          const SizedBox(width: 12),
-                          Text(
-                            'Görünüm & Tema Seçimi',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w800,
-                              color: textCol,
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                'Görünüm & Tema Seçimi',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w800,
+                                  color: textCol,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                       IconButton(
                         icon: const Icon(Icons.close_rounded),
@@ -234,16 +240,22 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal> {
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: const Center(
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Icon(Icons.add_circle_outline, color: Colors.white, size: 15),
-                                        SizedBox(width: 4),
-                                        Text(
-                                          '+ Gelir Ekle',
-                                          style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w700),
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: 4),
+                                      child: FittedBox(
+                                        fit: BoxFit.scaleDown,
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Icon(Icons.add_circle_outline, color: Colors.white, size: 15),
+                                            SizedBox(width: 4),
+                                            Text(
+                                              '+ Gelir Ekle',
+                                              style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w700),
+                                            ),
+                                          ],
                                         ),
-                                      ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -260,20 +272,26 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal> {
                                     border: Border.all(color: primaryCol.withValues(alpha: 0.5)),
                                   ),
                                   child: Center(
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Icon(Icons.shopping_basket_rounded, color: primaryCol, size: 15),
-                                        const SizedBox(width: 4),
-                                        Text(
-                                          '- 1000 ₺ Muz',
-                                          style: TextStyle(
-                                            color: textCol,
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w600,
-                                          ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                                      child: FittedBox(
+                                        fit: BoxFit.scaleDown,
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Icon(Icons.shopping_basket_rounded, color: primaryCol, size: 15),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              '- 1000 ₺ Muz',
+                                              style: TextStyle(
+                                                color: textCol,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -291,12 +309,16 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal> {
                               const SizedBox(width: 8),
                               _buildColorSwatchCircle('Zemin', previewBg, isBordered: true),
                               const Spacer(),
-                              Text(
-                                _selectedPalette.displayName,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w800,
-                                  color: primaryCol,
+                              Flexible(
+                                child: Text(
+                                  _selectedPalette.displayName,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w800,
+                                    color: primaryCol,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                             ],
@@ -319,33 +341,42 @@ class _ThemeSelectorModalState extends State<ThemeSelectorModal> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
-                            children: [
-                              Icon(
-                                _isDark ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
-                                color: _isDark ? Colors.amber : Colors.orange,
-                                size: 24,
-                              ),
-                              const SizedBox(width: 12),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    _isDark ? 'Koyu Soft Gece Modu' : 'Açık Soft Pastel Mod',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w700,
-                                      color: textCol,
-                                    ),
+                          Expanded(
+                            child: Row(
+                              children: [
+                                Icon(
+                                  _isDark ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
+                                  color: _isDark ? Colors.amber : Colors.orange,
+                                  size: 24,
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        _isDark ? 'Koyu Soft Gece Modu' : 'Açık Soft Pastel Mod',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w700,
+                                          color: textCol,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      Text(
+                                        _isDark ? 'Göz yormayan yumuşak koyu tonlar' : 'Ferah ve aydınlık pastel görünüm',
+                                        style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
                                   ),
-                                  Text(
-                                    _isDark ? 'Göz yormayan yumuşak koyu tonlar' : 'Ferah ve aydınlık pastel görünüm',
-                                    style: const TextStyle(fontSize: 12, color: AppTheme.textSecondary),
-                                  ),
-                                ],
-                              ),
-                            ],
+                                ),
+                              ],
+                            ),
                           ),
+                          const SizedBox(width: 8),
                           Switch(
                             value: _isDark,
                             activeThumbColor: primaryCol,

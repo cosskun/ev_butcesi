@@ -36,6 +36,7 @@ class _StatementImportScreenState extends State<StatementImportScreen> {
   }
 
   Future<void> _pickStatementFile() async {
+    final existing = context.read<FinanceProvider>().transactions;
     try {
       final result = await FilePicker.pickFiles(
         type: FileType.custom,
@@ -50,7 +51,6 @@ class _StatementImportScreenState extends State<StatementImportScreen> {
         });
 
         final pickedFile = result.files.first;
-        final existing = context.read<FinanceProvider>().transactions;
 
         void updateProgress(double progress, String status) {
           if (mounted) {
@@ -120,6 +120,7 @@ class _StatementImportScreenState extends State<StatementImportScreen> {
       return;
     }
 
+    final existing = context.read<FinanceProvider>().transactions;
     setState(() {
       _isAnalyzing = true;
       _analysisProgress = 0.3;
@@ -127,7 +128,6 @@ class _StatementImportScreenState extends State<StatementImportScreen> {
     });
     await Future.delayed(const Duration(milliseconds: 30));
 
-    final existing = context.read<FinanceProvider>().transactions;
     setState(() {
       _analysisProgress = 0.7;
       _analysisStatus = 'İşlemler ve kategoriler taranıyor...';

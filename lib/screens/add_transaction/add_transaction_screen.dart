@@ -513,11 +513,14 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                 children: [
                   Icon(Icons.event_rounded, color: theme.colorScheme.primary, size: 20),
                   const SizedBox(width: 12),
-                  Text(
-                    '${Formatters.formatDate(_selectedDate)} - ${Formatters.formatTime(_selectedDate)}',
-                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                  Expanded(
+                    child: Text(
+                      '${Formatters.formatDate(_selectedDate)} - ${Formatters.formatTime(_selectedDate)}',
+                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-                  const Spacer(),
                   TextButton(
                     onPressed: () async {
                       final pickedDate = await showDatePicker(
@@ -526,32 +529,33 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
                         firstDate: DateTime(2020),
                         lastDate: DateTime(2030),
                       );
-                      if (pickedDate != null && mounted) {
-                        final pickedTime = await showTimePicker(
-                          context: context,
-                          initialTime: TimeOfDay.fromDateTime(_selectedDate),
-                        );
-                        if (pickedTime != null) {
-                          setState(() {
-                            _selectedDate = DateTime(
-                              pickedDate.year,
-                              pickedDate.month,
-                              pickedDate.day,
-                              pickedTime.hour,
-                              pickedTime.minute,
-                            );
-                          });
-                        } else {
-                          setState(() {
-                            _selectedDate = DateTime(
-                              pickedDate.year,
-                              pickedDate.month,
-                              pickedDate.day,
-                              _selectedDate.hour,
-                              _selectedDate.minute,
-                            );
-                          });
-                        }
+                      if (pickedDate == null) return;
+                      if (!context.mounted) return;
+                      final pickedTime = await showTimePicker(
+                        context: context,
+                        initialTime: TimeOfDay.fromDateTime(_selectedDate),
+                      );
+                      if (!context.mounted) return;
+                      if (pickedTime != null) {
+                        setState(() {
+                          _selectedDate = DateTime(
+                            pickedDate.year,
+                            pickedDate.month,
+                            pickedDate.day,
+                            pickedTime.hour,
+                            pickedTime.minute,
+                          );
+                        });
+                      } else {
+                        setState(() {
+                          _selectedDate = DateTime(
+                            pickedDate.year,
+                            pickedDate.month,
+                            pickedDate.day,
+                            _selectedDate.hour,
+                            _selectedDate.minute,
+                          );
+                        });
                       }
                     },
                     child: const Text('Değiştir'),
@@ -691,14 +695,19 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 16, color: isSelected ? color : AppTheme.textSecondary),
-            const SizedBox(width: 6),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                color: isSelected ? AppTheme.textPrimary : AppTheme.textSecondary,
+            Icon(icon, size: 15, color: isSelected ? color : AppTheme.textSecondary),
+            const SizedBox(width: 4),
+            Flexible(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 12.5,
+                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                    color: isSelected ? AppTheme.textPrimary : AppTheme.textSecondary,
+                  ),
+                ),
               ),
             ),
           ],

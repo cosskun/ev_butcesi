@@ -10,6 +10,7 @@ import '../models/transaction_model.dart';
 import '../models/wallet_model.dart';
 
 class DatabaseService {
+  static bool isTestMode = false;
   static final DatabaseService _instance = DatabaseService._internal();
   factory DatabaseService() => _instance;
   DatabaseService._internal();
@@ -26,17 +27,24 @@ class DatabaseService {
     const dbName = 'kurusu_kurusuna.db';
     Database db;
 
-    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    if (!isTestMode && (Platform.isWindows || Platform.isLinux || Platform.isMacOS)) {
       sqfliteFfiInit();
       databaseFactory = databaseFactoryFfi;
     }
 
     String path;
-    if (Platform.environment.containsKey('FLUTTER_TEST')) {
+    if (isTestMode || Platform.environment.containsKey('FLUTTER_TEST')) {
       path = inMemoryDatabasePath;
     } else {
-      final documentsDirectory = await getApplicationDocumentsDirectory();
-      path = join(documentsDirectory.path, dbName);
+      try {
+        final documentsDirectory = await getApplicationDocumentsDirectory().timeout(
+          const Duration(seconds: 2),
+          onTimeout: () => Directory(Directory.systemTemp.path),
+        );
+        path = join(documentsDirectory.path, dbName);
+      } catch (_) {
+        path = inMemoryDatabasePath;
+      }
     }
 
     db = await openDatabase(

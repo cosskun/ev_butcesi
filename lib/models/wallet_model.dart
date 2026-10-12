@@ -64,7 +64,7 @@ class WalletModel {
       'type': type.name,
       'balance': balance,
       'icon_code': icon.codePoint,
-      'color_value': color.value,
+      'color_value': color.toARGB32(),
       'bank_name': bankName,
       'card_limit': cardLimit,
       'cutoff_day': cutoffDay,

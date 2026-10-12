@@ -190,16 +190,23 @@ class CategoryBudgetCard extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
-                            children: [
-                              Icon(cat.icon, size: 14, color: cat.color),
-                              const SizedBox(width: 6),
-                              Text(
-                                cat.name,
-                                style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600, color: textPrimary),
-                              ),
-                            ],
+                          Expanded(
+                            child: Row(
+                              children: [
+                                Icon(cat.icon, size: 14, color: cat.color),
+                                const SizedBox(width: 6),
+                                Expanded(
+                                  child: Text(
+                                    cat.name,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600, color: textPrimary),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
+                          const SizedBox(width: 8),
                           Text(
                             '${Formatters.formatCurrency(spent)} / ${Formatters.formatCurrency(limit)}',
                             style: TextStyle(
@@ -224,18 +231,23 @@ class CategoryBudgetCard extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            status == BudgetStatus.exceeded
-                                ? '⚠️ Bütçe ${Formatters.formatCurrency(-remaining)} aşıldı!'
-                                : (status == BudgetStatus.warning
-                                    ? '⚡ Sınıra yaklaşıldı (${Formatters.formatCurrency(remaining)} kaldı)'
-                                    : '${Formatters.formatCurrency(remaining)} bütçe kaldı'),
-                            style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w600,
-                              color: statusColor,
+                          Expanded(
+                            child: Text(
+                              status == BudgetStatus.exceeded
+                                  ? '⚠️ Bütçe ${Formatters.formatCurrency(-remaining)} aşıldı!'
+                                  : (status == BudgetStatus.warning
+                                      ? '⚡ Sınıra yaklaşıldı (${Formatters.formatCurrency(remaining)} kaldı)'
+                                      : '${Formatters.formatCurrency(remaining)} bütçe kaldı'),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w600,
+                                color: statusColor,
+                              ),
                             ),
                           ),
+                          const SizedBox(width: 4),
                           Text(
                             '%${(progress * 100).toInt()}',
                             style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: statusColor),

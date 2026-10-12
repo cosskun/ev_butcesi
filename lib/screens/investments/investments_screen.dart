@@ -151,15 +151,19 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
                         ),
                       ),
                       const SizedBox(width: 6),
-                      Text(
-                        'Canlı Piyasa Senkronize • ${Formatters.formatTime(investmentProvider.lastPriceRefreshTime!)}',
-                        style: const TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                          color: AppTheme.incomeColor,
+                      Expanded(
+                        child: Text(
+                          'Canlı Piyasa Senkronize • ${Formatters.formatTime(investmentProvider.lastPriceRefreshTime!)}',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            color: AppTheme.incomeColor,
+                          ),
                         ),
                       ),
-                      const Spacer(),
+                      const SizedBox(width: 6),
                       InkWell(
                         onTap: () => context.read<InvestmentProvider>().refreshAllPrices(),
                         child: const Row(
@@ -272,40 +276,55 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Toplam Maliyet',
-                                style: TextStyle(fontSize: 10.5, color: Colors.white.withValues(alpha: 0.8)),
-                              ),
-                              const SizedBox(height: 1),
-                              Text(
-                                Formatters.formatCurrency(totalCost),
-                                style: const TextStyle(color: Colors.white, fontSize: 12.5, fontWeight: FontWeight.w700),
-                              ),
-                            ],
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Toplam Maliyet',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(fontSize: 10.5, color: Colors.white.withValues(alpha: 0.8)),
+                                ),
+                                const SizedBox(height: 1),
+                                FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    Formatters.formatCurrency(totalCost),
+                                    style: const TextStyle(color: Colors.white, fontSize: 12.5, fontWeight: FontWeight.w700),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                           Container(width: 1, height: 22, color: Colors.white24),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                'Net Kâr / Zarar',
-                                style: TextStyle(fontSize: 10.5, color: Colors.white.withValues(alpha: 0.8)),
-                              ),
-                              const SizedBox(height: 1),
-                              Text(
-                                '${isProfitable ? '+' : ''}${Formatters.formatCurrency(totalPL)}',
-                                style: TextStyle(
-                                  color: isProfitable ? const Color(0xFFA5D6A7) : const Color(0xFFFFAB91),
-                                  fontSize: 12.5,
-                                  fontWeight: FontWeight.w800,
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  'Net Kâr / Zarar',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(fontSize: 10.5, color: Colors.white.withValues(alpha: 0.8)),
                                 ),
-                              ),
-                            ],
+                                const SizedBox(height: 1),
+                                FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  alignment: Alignment.centerRight,
+                                  child: Text(
+                                    '${isProfitable ? '+' : ''}${Formatters.formatCurrency(totalPL)}',
+                                    style: TextStyle(
+                                      color: isProfitable ? const Color(0xFFA5D6A7) : const Color(0xFFFFAB91),
+                                      fontSize: 12.5,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -350,9 +369,13 @@ class _InvestmentsScreenState extends State<InvestmentsScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'Varlık Listesi (${investments.length})',
-                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppTheme.textPrimary),
+                  Expanded(
+                    child: Text(
+                      'Varlık Listesi (${investments.length})',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppTheme.textPrimary),
+                    ),
                   ),
                   TextButton.icon(
                     style: TextButton.styleFrom(
