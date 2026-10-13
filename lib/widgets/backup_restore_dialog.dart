@@ -50,7 +50,7 @@ class _BackupRestoreSheetState extends State<BackupRestoreSheet> {
 
   void _importBackup() async {
     try {
-      final picked = await FilePicker.pickFiles(
+      final picked = await FilePicker.platform.pickFiles(
         type: FileType.custom,
         allowedExtensions: ['json'],
       );
